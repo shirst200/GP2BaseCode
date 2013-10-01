@@ -10,6 +10,10 @@ struct IDXGISwapChain;
 struct ID3D10RenderTargetView;
 struct ID3D10DepthStencilView;
 struct ID3D10Texture2D;
+struct ID3D10Effect;
+struct ID3D10Buffer;
+struct ID3D10Layout;
+struct ID3D10EffectTecnique;
 
 //D3D10Renderer implements the Renderer interface
 class D3D10Renderer:public IRenderer
@@ -26,6 +30,10 @@ private:
 	bool createDevice(HWND pWindowHandle,int windowWidth, int windowHeight,
 bool fullScreen);
 	bool createInitialRenderTarget(int windowWidth, int windowHeight);
+	void render();
+	bool loadEffectFromMemory(const char pMem);
+	bool createBuffer();
+	bool createVertexLayout();
 private:
 	//D3D10 stuff
 	ID3D10Device * m_pD3D10Device;
@@ -33,4 +41,8 @@ private:
 	ID3D10RenderTargetView * m_pRenderTargetView;
 	ID3D10DepthStencilView * m_pDepthStencelView;
 	ID3D10Texture2D *m_pDepthStencilTexture;
+	ID3D10Effect * m_pTempEffect;
+	ID3D10EffectTechnique * m_pTempTechnique;
+	ID3D10Buffer * m_pTempBuffer;
+	ID3D10InputLayout * m_pTempVertexLayout;
 };
