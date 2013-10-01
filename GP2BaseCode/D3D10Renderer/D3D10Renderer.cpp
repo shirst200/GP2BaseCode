@@ -3,6 +3,8 @@
 #include <D3D10.h>
 #include <D3DX10.h>
 
+struct Vertex{float x,y,z;};
+
 D3D10Renderer::D3D10Renderer()
 {
 	m_pD3D10Device=NULL;
@@ -10,6 +12,10 @@ D3D10Renderer::D3D10Renderer()
 	m_pSwapChain=NULL;
 	m_pDepthStencelView=NULL;
 	m_pDepthStencilTexture=NULL;
+	m_pTempEffect=NULL;
+	m_pTempTechnique=NULL;
+	m_pTempBuffer=NULL;
+	m_pTempVertexLayout=NULL;
 }
 
 D3D10Renderer::~D3D10Renderer()
@@ -23,6 +29,12 @@ D3D10Renderer::~D3D10Renderer()
 		m_pDepthStencelView->Release();
 	if (m_pDepthStencilTexture)
 		m_pDepthStencilTexture->Release();
+	if (m_pTempEffect)
+		m_pTempEffect->Release();
+	if (m_pTempBuffer)
+		m_pTempBuffer->Release();
+	if (m_pTempVertexLayout)
+		m_pTempVertexLayout->Release();
 	if (m_pSwapChain)
 		m_pSwapChain->Release();
 	if (m_pD3D10Device)
@@ -42,8 +54,8 @@ bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
 		return false;
 	if (!createInitialRenderTarget(width,height))
 		return false;
-	if (!loadEffectFromMemory(pMem))
-		return false;
+//	if (!loadEffectFromMemory(pMem))
+//		return false;
 	if (!createBuffer())
 		return false;
 	if(!createVertexLayout())
@@ -149,6 +161,37 @@ bool D3D10Renderer::createInitialRenderTarget(int windowWidth, int windowHeight)
 	return true;
 }
 
+bool D3D10Renderer::createBuffer()
+{
+	Vertex verts[]={
+		{-1.0f,-1.0f,0.0f},
+		{0.0f,1.0f,0.0f},
+		{1.0f,-1.0f,0.0f}
+	};
+	D3D10_BUFFER_DESC bd;
+	bd.Usage = D3D10_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof( Vertex ) * 3;
+	bd.BindFlags = D3D10_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+
+	D3D10_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem =&verts;
+	if (FAILED(m_pD3D10Device->CreateBuffer(
+		&bd,
+		&InitData,
+		&m_pTempBuffer )))
+	{
+		OutputDebugStringA("can't create buffer");
+	}
+	return true;
+}
+
+
+bool D3D10Renderer::loadEffectFromMemory(const char* pMem)
+{return true;}
+bool D3D10Renderer::createVertexLayout()
+{return true;}
 
 void D3D10Renderer::clear(float r,float g,float b,float a)
 {

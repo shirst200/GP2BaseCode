@@ -12,8 +12,8 @@ struct ID3D10DepthStencilView;
 struct ID3D10Texture2D;
 struct ID3D10Effect;
 struct ID3D10Buffer;
-struct ID3D10Layout;
-struct ID3D10EffectTecnique;
+struct ID3D10InputLayout;
+struct ID3D10EffectTechnique;
 
 //D3D10Renderer implements the Renderer interface
 class D3D10Renderer:public IRenderer
@@ -31,7 +31,7 @@ private:
 bool fullScreen);
 	bool createInitialRenderTarget(int windowWidth, int windowHeight);
 	void render();
-	bool loadEffectFromMemory(const char pMem);
+	bool loadEffectFromMemory(const char* pMem);
 	bool createBuffer();
 	bool createVertexLayout();
 private:
