@@ -39,6 +39,8 @@ D3D10Renderer::~D3D10Renderer()
 		m_pSwapChain->Release();
 	if (m_pD3D10Device)
 		m_pD3D10Device->Release();
+	if (m_pTempBuffer)
+		m_pTempBuffer->Release();
 }
 
 bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
