@@ -28,6 +28,7 @@ class CGameApplication
 public:
 	CGameApplication(void);
 	//virtual deconstructor, so this class can be overridden
+	virtual ~CGameApplication(void);
 	virtual bool init();
 	void run();
 	//virtual functions can be overridden
@@ -43,6 +44,6 @@ private:
 	bool initWindow();
 private:
 	IWindow * m_pWindow;
-	GameOptionsDesc m_GameOptionsDesc;
+	GameOptionsDesc m_GameOptionDesc;
 	wstring m_ConfigFileName;
 };
