@@ -63,17 +63,13 @@ bool D3D10Renderer::createDevice(HWND window,int windowWidth,int windowHeight,bo
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
 	sd.BufferDesc.Width = windowWidth;
-	sd.BufferCount.Height = windowHeight;
+	sd.BufferDesc.Height = windowHeight;
 	sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	sd.BufferDesc.RefreshRate.Numerator = 60;
 	sd.BufferDesc.RefreshRate.Denominator = 1;
 
-	if (FAILED(D3D10CreateDeviceAndSwapChain(NULL,
-		D3D10_DRIVER_TYPE_HARDWARE,
-		NULL,
-		createDeviceFlags,
-		D3D10_SDK_VERSION,
-		&sd,,
+	if (FAILED(D3D10CreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, createDeviceFlags, D3D10_SDK_VERSION,
+		&sd,
 		&m_pSwapChain,
 		&m_pD3D10Device)))
 		return false;
@@ -131,4 +127,16 @@ bool D3D10Renderer::createInitialRenderTarget(int windowWidth, int windowHeight)
 	vp.TopLeftY=0;
 	m_pD3D10Device->RSSetViewports(1, &vp );
 	return true;
+}
+
+void D3D10Renderer::clear(float r, float g, float b, float a)
+{
+	const float ClearColour[4] = {r,g,b,a};
+	m_pD3D10Device->ClearRenderTargetView( m_pRenderTargetView, ClearColour );
+	m_pD3D10Device->ClearDepthStencilView(m_pDepthStencilView,D3D10_CLEAR_DEPTH,1.0f,0);
+}
+
+void D3D10Renderer::present()
+{
+	m_pSwapChain->Present( 0,0 );
 }
