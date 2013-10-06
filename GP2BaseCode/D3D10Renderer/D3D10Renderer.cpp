@@ -140,3 +140,18 @@ void D3D10Renderer::present()
 {
 	m_pSwapChain->Present( 0,0 );
 }
+
+bool D3D10Renderer::loadEffectFromMemory(const char pMem)
+{
+
+}
+
+bool D3D10Renderer::createBuffer()
+{
+
+}
+
+bool D3D10Renderer::createVertexLayout()
+{
+
+}

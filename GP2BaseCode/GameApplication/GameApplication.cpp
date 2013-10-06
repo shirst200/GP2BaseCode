@@ -2,7 +2,7 @@
 
 //should check to see if we are on a windows platform
 #include"C:/Users/Sam Hirst/Desktop/prog/Lab1/GP2BaseCode/GP2BaseCode/Window/Win32Window.h"
-#include"C:Users/Sam Hirst/Desctop/prog/Lab1/GP2BaseCode/GP2BaseCode/D3D10Renderer/D3D10Renderer.h"
+#include"C:/Users/Sam Hirst/Desctop/prog/Lab1/GP2BaseCode/GP2BaseCode/D3D10Renderer/D3D10Renderer.h"
 
 //constrctor
 CGameApplication::CGameApplication(void)
@@ -69,8 +69,9 @@ bool CGameApplication::initPhysics()
 bool CGameApplication::initGraphics()
 {
 	//Check our settings first so wh know how to run
-	m_pRender=new D3D10Renderer();
-
+	m_pRenderer=new D3D10Renderer();
+	if(!m_pRenderer->init(m_pWindow->getHandleToWindow(),m_GameOptionDesc.fullscreen))
+		return false;
 	return true;
 }
 
@@ -107,7 +108,9 @@ void CGameApplication::run()
 //render, called to draw one frame of the game
 void CGameApplication::render()
 {
+	m_pRenderer->clear(1.0f,0.0f,0.0f,1.0f);
 
+	m_pRenderer->present();
 }
 
 //update, called to update the game
