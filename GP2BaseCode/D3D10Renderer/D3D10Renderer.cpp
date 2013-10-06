@@ -73,10 +73,62 @@ bool D3D10Renderer::createDevice(HWND window,int windowWidth,int windowHeight,bo
 		NULL,
 		createDeviceFlags,
 		D3D10_SDK_VERSION,
-		&sd,
+		&sd,,
 		&m_pSwapChain,
 		&m_pD3D10Device)))
 		return false;
 
+	return true;
+}
+
+bool D3D10Renderer::createInitialRenderTarget(int windowWidth, int windowHeight)
+{
+	ID3D10Texture2D *pBackBuffer;
+
+	if (FAILED(m_pSwapChain->GetBuffer(0,
+		__uuidof(ID3D10Texture2D),
+		(void**)&pBackBuffer)))
+		return false;
+		
+	D3D10_TEXTURE2D_DESC descDepth;
+	descDepth.Width=windowWidth;
+	descDepth.Height=windowHeight;
+	descDepth.MipLevels=1;
+	descDepth.ArraySize=1;
+	descDepth.Format=DXGI_FORMAT_D32_FLOAT;
+	descDepth.SampleDesc.Count=1;
+	descDepth.SampleDesc.Quality=0;
+	descDepth.Usage=D3D10_USAGE_DEFAULT;
+	descDepth.BindFlags=D3D10_BIND_DEPTH_STENCIL;
+	descDepth.CPUAccessFlags=0;
+	descDepth.MiscFlags=0;
+
+	if (FAILED(m_pD3D10Device->CreateTexture2D(&descDepth,NULL,&m_pDepthStencilTexture)))
+		return false;
+	D3D10_DEPTH_STENCIL_VIEW_DESC descDSV;
+	descDSV.Format=descDepth.Format;
+	descDSV.ViewDimension=D3D10_DSV_DIMENSION_TEXTURE2D;
+	descDSV.Texture2D.MipSlice=0;
+
+	if(FAILED(m_pD3D10Device->CreateDepthStencilView(m_pDepthStencilTexture,&descDSV,&m_pDepthStencilView)))
+		return false;
+
+	if(FAILED(m_pD3D10Device->CreateRenderTargetView( pBackBuffer,NULL, &m_pRenderTargetView )))
+	{
+		pBackBuffer->Release();
+		return false;
+	}
+	pBackBuffer->Release();
+
+	m_pD3D10Device->OMSetRenderTargets(1,&m_pRenderTargetView,m_pDepthStencilView);
+
+	D3D10_VIEWPORT vp;
+	vp.Width = windowWidth;
+	vp.Height = windowHeight;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX=0;
+	vp.TopLeftY=0;
+	m_pD3D10Device->RSSetViewports(1, &vp );
 	return true;
 }
