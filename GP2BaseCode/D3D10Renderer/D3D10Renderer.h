@@ -22,7 +22,7 @@ public:
 	void clear(float r, float g,float b, float a);
 	void present();
 private:
-	bool createDevice(HWHD pWindowHandle, int windowWidth, int windowHeight,bool fullScreen);
+	bool createDevice(HWND pWindowHandle, int windowWidth, int windowHeight,bool fullScreen);
 	bool createInitialRenderTarget(int windowWIdth, int windowHeight);
 private:
 	//D3D10 stuff
