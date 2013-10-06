@@ -28,3 +28,19 @@ D3D10Renderer::~D3D10Renderer()
 	if (m_pD3D10Device)
 		m_pD3D10Device->Release();
 }
+
+bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
+{
+	HWHD window=(HWHD)pWindowHandle;
+	RECT windowRect;
+	GetClientRect(window,&windowRect);
+
+	UINT width=windowRect.right-windowRect.left;
+	UINT height=windowRect.bottom-windowRect.top;
+
+	if (!createDevice(window,width,height,fullScreen))
+		return false;
+	if (!createInitialRenderTarget(width,height))
+		return false;
+	return true;
+}
