@@ -3,6 +3,8 @@
 #include <D3D10.h>
 #include <D3DX10.h>
 
+struct  Vertex{float x, y , z ;};
+
 D3D10Renderer::D3D10Renderer()
 {
 	m_pD3D10Device=NULL;
@@ -27,6 +29,8 @@ D3D10Renderer::~D3D10Renderer()
 		m_pSwapChain->Release();
 	if (m_pD3D10Device)
 		m_pD3D10Device->Release();
+	if (m_pTempBuffer)
+		m_pTempBuffer->Release();
 }
 
 bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
@@ -148,7 +152,26 @@ bool D3D10Renderer::loadEffectFromMemory(const char pMem)
 
 bool D3D10Renderer::createBuffer()
 {
+	Vertex verts[]={
+		{-1.0f,-1.0f,0.0f},
+		{0.0f,1.0f,0.0f,},
+		{1.0f,-1.0f,0.0f}
+	};
 
+	D3D10_BUFFER_DESC bd;
+	bd.Usage = D3D10_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof( Vertex ) * 3;
+	bd.BindFlags = D3D10_BIND_VERTEX_BUFFER;
+	bd.CPUAccessFlags = 0;
+	bd.MiscFlags = 0;
+
+	D3D10_SUBRESOURCE_DATA InitData;
+	InitData.pSysMem = &verts;
+
+	if(FAILED(m_pD3D10Device->CreateBuffer(&bd, &InitData,&m_pTempBuffer)))
+	{
+		OutputDebugStringA("Can't create Buffer");
+	}
 }
 
 bool D3D10Renderer::createVertexLayout()

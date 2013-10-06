@@ -1,8 +1,8 @@
 #include "GameApplication.h"
 
 //should check to see if we are on a windows platform
-#include"C:/Users/Sam Hirst/Desktop/prog/Lab1/GP2BaseCode/GP2BaseCode/Window/Win32Window.h"
-#include"C:/Users/Sam Hirst/Desctop/prog/Lab1/GP2BaseCode/GP2BaseCode/D3D10Renderer/D3D10Renderer.h"
+#include"../Window/Win32Window.h"
+#include"..D3D10Renderer/D3D10Renderer.h"
 
 //constrctor
 CGameApplication::CGameApplication(void)

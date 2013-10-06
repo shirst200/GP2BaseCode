@@ -40,6 +40,6 @@ private:
 	ID3D10Texture2D * m_pDepthStencilTexture;
 	ID3D10Effect * m_pTempEffect;
 	ID3D10EffectTechnique *m_pTempTechnique;
-	ID3D10Buffer*m_pTempBuffer;
-	ID3D10InputLayout*m_pTempVertexLayout;
+	ID3D10Buffer * m_pTempBuffer;
+	ID3D10InputLayout * m_pTempVertexLayout;
 };
