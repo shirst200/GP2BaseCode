@@ -2,7 +2,7 @@
 
 //should check to see if we are on a windows platform
 #include"../Window/Win32Window.h"
-#include"..D3D10Renderer/D3D10Renderer.h"
+#include"../D3D10Renderer/D3D10Renderer.h"
 
 //constrctor
 CGameApplication::CGameApplication(void)
