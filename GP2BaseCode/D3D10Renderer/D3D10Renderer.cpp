@@ -140,3 +140,16 @@ bool D3D10Renderer::createInitialRenderTarget(int windowWidth, int windowHeight)
 		, &vp );
 	return true;
 }
+
+void D3D10Renderer::clear(float r,float g,float b,float a)
+{
+    const float ClearColor[4] = { r, g, b, a}; 
+    m_pD3D10Device->ClearRenderTargetView( m_pRenderTargetView, ClearColor );
+    m_pD3D10Device->ClearDepthStencilView(m_pDepthStencelView,
+	D3D10_CLEAR_DEPTH,1.0f,0);
+}
+
+void D3D10Renderer::present()
+{
+    m_pSwapChain->Present( 0, 0 );
+}
