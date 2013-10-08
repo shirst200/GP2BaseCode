@@ -24,11 +24,17 @@ CGameApplication::CGameApplication(void)
 CGameApplication::~CGameApplication(void)
 {
 	//deletethings in reverse order
+	if (m_pRenderer)
+	{
+		delete m_pRenderer;
+		m_pRenderer=NULL;
+	}
 	if (m_pWindow)
 	{
 		delete m_pWindow;
 		m_pWindow=NULL;
 	}
+
 }
 
 //Init
