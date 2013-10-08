@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0A3DE6EA-A5DC-4102-8706-1E05C06AC05B}</ProjectGuid>
+    <ProjectGuid>{0FFE5D98-C3B1-4E58-9EC0-71B24E07BB20}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GameApplication</RootNamespace>
+    <RootNamespace>Renderer</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -72,21 +72,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GameApplication.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\D3D10Renderer\D3D10Renderer.vcxproj">
-      <Project>{a9104c56-38c1-44e0-8cf6-584bfaed8874}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Lab1\Lab1.vcxproj">
-      <Project>{08322dfb-3579-46c7-8a52-4fc241ed892f}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Window\Window.vcxproj">
-      <Project>{db0e915c-43b1-49a3-a126-3551bf087ffe}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="GameApplication.cpp" />
+    <ClInclude Include="Renderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
