@@ -84,6 +84,14 @@
   <ItemGroup>
     <ClCompile Include="D3D10Renderer.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Renderer\Renderer.vcxproj">
+      <Project>{f51d53b5-7924-41ca-838e-46bcf66c3222}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Window\Window.vcxproj">
+      <Project>{db0e915c-43b1-49a3-a126-3551bf087ffe}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

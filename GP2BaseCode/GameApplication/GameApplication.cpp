@@ -23,12 +23,6 @@ CGameApplication::CGameApplication(void)
 //deconstructor
 CGameApplication::~CGameApplication(void)
 {
-	//deletethings in reverse order
-	if (m_pRenderer)
-	{
-		delete m_pRenderer;
-		m_pRenderer=NULL;
-	}
 	if (m_pWindow)
 	{
 		delete m_pWindow;
@@ -77,9 +71,9 @@ bool CGameApplication::initGraphics()
 {
 	//check our settings first, to see what graphics mode we are in
 	m_pRenderer=new D3D10Renderer();
-	if (!m_pRenderer->init(m_pWindow->getHandleToWindow(), m_GameOptionDesc.fullscreen))
+	if (!m_pRenderer->init(m_pWindow->getHandleToWindow(),
+		m_GameOptionDesc.fullscreen))
 		return false;
-
 	return true;
 }
 
