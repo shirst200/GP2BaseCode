@@ -153,3 +153,4 @@ void D3D10Renderer::present()
 {
     m_pSwapChain->Present( 0, 0 );
 }
+
