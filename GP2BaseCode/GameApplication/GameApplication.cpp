@@ -86,3 +86,27 @@ bool CGameApplication::initGame()
 {
 	return true;
 }
+//Called to put the game in a loop(aka game loop)
+void CGameApplication::run()
+{
+	//while the window is not closed
+	while(m_pWindow->running())
+	{
+		//check for all windows messages
+		m_pWindow->checkForWindowMessages();
+		//update
+		update();
+		//render
+		render();
+	}
+}
+
+//Render, called to draw one frame of the game
+void CGameApplication::render()
+{
+}
+
+//Update, called to update the game
+void CGameApplication::update()
+{
+}
