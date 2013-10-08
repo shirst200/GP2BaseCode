@@ -47,3 +47,42 @@ bool CGameApplication::init()
 	return true;
 }
 
+//called to parse the config file
+bool CGameApplication::parseConfigFile()
+{
+	return true;
+}
+
+//initInput - Initialises the input
+bool CGameApplication::initInput()
+{
+	return true;
+}
+
+//initPhysics - Initialises the physics system
+bool CGameApplication::initPhysics()
+{
+	return true;
+}
+
+//initGraphics - initialise the graphics subsystem
+bool CGameApplication::initGraphics()
+{
+	return true;
+}
+
+//initWindow - initialise the window
+bool CGameApplication::initWindow()
+{
+	//Create a Win32 Window
+	m_pWindow=new CWin32Window();
+	m_pWindow->init(m_GameOptionDesc.gameName,m_GameOptionDesc.width,
+			m_GameOptionDesc.height,m_GameOptionDesc.fullscreen);
+	return true;
+}
+
+//called to init the game elements
+bool CGameApplication::initGame()
+{
+	return true;
+}
