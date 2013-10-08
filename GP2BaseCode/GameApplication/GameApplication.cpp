@@ -29,3 +29,21 @@ CGameApplication::~CGameApplication(void)
 		m_pWindow=NULL;
 	}
 }
+
+//Init
+//This initialises all subsystems
+bool CGameApplication::init()
+{
+	if(!parseConfigFile())
+		return false;
+	if (!initWindow())
+		return false;
+	if (!initGraphics())
+		return false;
+	if (!initInput())
+		return false;
+	if (!initGame())
+		return false;
+	return true;
+}
+
