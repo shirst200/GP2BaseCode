@@ -75,9 +75,6 @@
     <ClInclude Include="GameApplication.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lab1\Lab1.vcxproj">
-      <Project>{08322dfb-3579-46c7-8a52-4fc241ed892f}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Window\Window.vcxproj">
       <Project>{db0e915c-43b1-49a3-a126-3551bf087ffe}</Project>
     </ProjectReference>
