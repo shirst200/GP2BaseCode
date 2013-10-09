@@ -3,7 +3,38 @@
 #include <D3D10.h>
 #include <D3DX10.h>
 
-struct Vertex {int x, y, z; };
+struct Vertex {float x, y, z; };
+
+const D3D10_INPUT_ELEMENT_DESC VerexLayout[] =
+{		
+    { "POSITION",
+	0, 
+	DXGI_FORMAT_R32G32B32_FLOAT, 
+	0, 
+	0, 
+	D3D10_INPUT_PER_VERTEX_DATA, 
+	0 }, 
+};
+
+
+const char basicEffect[]=\
+	"float4 VS( float4 Pos : POSITION ) : SV_POSITION"\
+	"{"\
+	"	return Pos;"\
+	"}"\
+	"float4 PS( float4 Pos : SV_POSITION ) : SV_Target"\
+	"{"\
+	"	return float4( 1.0f, 1.0f, 0.0f, 1.0f );"\
+	"}"\
+	"technique10 Render"\
+	"{"\
+	"	pass P0"\
+	"	{"\
+	"		SetVertexShader( CompileShader( vs_4_0, VS() ) );"\
+	"		SetGeometryShader( NULL );"\
+	"		SetPixelShader( CompileShader( ps_4_0, PS() ) );"\
+	"	}"\
+	"}";
 
 
 D3D10Renderer::D3D10Renderer()
@@ -32,6 +63,10 @@ D3D10Renderer::~D3D10Renderer()
 		m_pD3D10Device->Release();
 	if (m_pTempBuffer)
 		m_pTempBuffer->Release();
+	if (m_pTempEffect)
+		m_pTempEffect->Release();
+	if (m_pTempVertexLayout)
+		m_pTempVertexLayout->Release();
 }
 
 bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
@@ -166,6 +201,30 @@ void D3D10Renderer::Render()
 
 bool D3D10Renderer::loadEffectFromMemory(const char* pMem)
 {
+		DWORD dwShaderFlags = D3D10_SHADER_ENABLE_STRICTNESS;
+#if defined( DEBUG ) || defined( _DEBUG )
+	dwShaderFlags |= D3D10_SHADER_DEBUG;
+#endif
+		ID3D10Blob * pErrorBuffer=NULL;
+	if (FAILED(D3DX10CreateEffectFromMemory(pMem,
+		strlen(pMem),
+		NULL,
+		NULL,
+		NULL,
+		"fx_4_0", 
+		dwShaderFlags, 
+		0,
+		m_pD3D10Device, 
+		NULL, 
+		NULL, 
+		&m_pTempEffect, 
+		&pErrorBuffer,
+		NULL )))
+	{
+		OutputDebugStringA((char*)pErrorBuffer->GetBufferPointer());
+		return false;
+	}
+	m_pTempTechnique=m_pTempEffect->GetTechniqueByName("Render");
 	return true;
 }
 bool D3D10Renderer::createBuffer()
@@ -194,5 +253,18 @@ bool D3D10Renderer::createBuffer()
 }
 bool D3D10Renderer::createVertexLayout()
 {
+	UINT numElements = sizeof( VerexLayout ) / sizeof(D3D10_INPUT_ELEMENT_DESC);
+    D3D10_PASS_DESC PassDesc;
+    m_pTempTechnique->GetPassByIndex( 0 )->GetDesc( &PassDesc );
+
+    if (FAILED(m_pD3D10Device->CreateInputLayout( VerexLayout, 
+		numElements, 
+		PassDesc.pIAInputSignature,
+        	PassDesc.IAInputSignatureSize, 
+		&m_pTempVertexLayout ))) 
+	{
+		OutputDebugStringA("Can't create layout");
+	}
+
 	return true;
 }
