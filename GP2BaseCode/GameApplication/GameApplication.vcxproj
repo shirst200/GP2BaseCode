@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{0A3DE6EA-A5DC-4102-8706-1E05C06AC05B}</ProjectGuid>
+    <ProjectGuid>{17CA388B-9F8C-4884-9FA2-DBA86904E6F1}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GameApplication</RootNamespace>
   </PropertyGroup>
@@ -45,11 +45,18 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>d3d10.lib;d3dx10.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -76,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\D3D10Renderer\D3D10Renderer.vcxproj">
-      <Project>{78b808eb-2ab0-4f92-bd88-37efab65265c}</Project>
+      <Project>{0681e1e8-648c-4fb2-8778-381e813560b4}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Window\Window.vcxproj">
       <Project>{db0e915c-43b1-49a3-a126-3551bf087ffe}</Project>

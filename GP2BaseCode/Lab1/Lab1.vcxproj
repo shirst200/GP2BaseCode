@@ -55,6 +55,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3d10.lib;d3dx10.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -79,7 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameApplication\GameApplication.vcxproj">
-      <Project>{0a3de6ea-a5dc-4102-8706-1e05c06ac05b}</Project>
+      <Project>{17ca388b-9f8c-4884-9fa2-dba86904e6f1}</Project>
     </ProjectReference>
     <ProjectReference Include="..\Window\Window.vcxproj">
       <Project>{db0e915c-43b1-49a3-a126-3551bf087ffe}</Project>

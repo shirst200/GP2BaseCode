@@ -1,39 +1,40 @@
-//Header guard so this file is only compiled once
+//header guard, so this file is only compiled once
 #pragma once
 
-//brings in the functions defined in string ie wstring
 #include <string>
 
 using namespace std;
 
-//Forward declaration of o;ur window interface
+//Forward declaration of our Window Interface
 class IWindow;
 class IRenderer;
 
-//Structure for holding Game Options, this will be loaded form config files
+//Structure for holding GameOptions, this will be loaded from config files
 struct GameOptionsDesc
 {
-	//wstring is a string of wide charactors
 	wstring gameName;
 	int width;
 	int height;
 	bool fullscreen;
 };
 
-//we have used this here so we don't need to prefix all standard libuary types with std::
+//we have this here so we don't need to prefix all
+//standard library types with std::
 using namespace std;
 
-//Our game application class
+//Our Game Application class
 class CGameApplication
 {
 public:
 	CGameApplication(void);
 	//virtual deconstructor, so this class can be overridden
 	virtual ~CGameApplication(void);
+	//virtual function, can be overridden
 	virtual bool init();
 	void run();
-	//virtual functions can be overridden
+	//virtual function, can be overridden
 	virtual void render();
+	//virtual function, can be overridden
 	virtual void update();
 private:
 	bool parseConfigFile();

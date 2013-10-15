@@ -21,12 +21,12 @@ int main(int argc, char **argv)
 	CGameApplication *pApp=new CGameApplication();
 	if (!pApp->init())
 	{
-		if (pApp)
-		{
-			delete pApp;
-			pApp=NULL;
-			return 1;
-		}
+			if (pApp)
+			{
+				delete pApp;
+				pApp=NULL;
+				return 1;
+			}
 	}
 	pApp->run();
 	if (pApp)
@@ -36,3 +36,4 @@ int main(int argc, char **argv)
 	}
 	return 0;
 }
+
