@@ -98,10 +98,11 @@ bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
 	if (!createVertexLayout())
 		return false;
 	XMFLOAT3 cameraPos=XMFLOAT3(0.0f,0.0f,-10.0f);
-	XMFLOAT3 focusPos=XMFLOAT3(-0.5f,-0.5f,0.0f);
+	XMFLOAT3 focusPos=XMFLOAT3(0.0f,0.0f,0.0f);
 	XMFLOAT3 up=XMFLOAT3(0.0f,1.0f,0.0f);
 
 	createCamera(XMLoadFloat3(&cameraPos),XMLoadFloat3(&focusPos),XMLoadFloat3(&up),XM_PI/4,(float)width/(float)height,0.1f,100.0f);
+	positionObject(1.0f,1.0f,1.0f);
 	return true;
 }
 
@@ -359,6 +360,11 @@ void D3D10Renderer::present()
 {
 	//this presents the next set of buffers in the set of buffers owned by the swap chain
 	m_pSwapChain->Present( 0, 0);
+}
+
+void D3D10Renderer::positionObject(float x,float y, float z)
+{
+	m_World=XMMatrixTranslation(x,y,z);
 }
 
 void D3D10Renderer::createCamera(XMVECTOR &position, XMVECTOR &focus, XMVECTOR &up, float fov, float aspectRatio, float nearClip, float farClip)
