@@ -1,10 +1,10 @@
 #include "D3D10Renderer.h"
 
 
-
 struct Vertex
 {
-	float x, y, z;
+	float x,y,z;
+	float tu,tv;
 };
 
 const D3D10_INPUT_ELEMENT_DESC VertexLayout[] =
@@ -14,6 +14,14 @@ const D3D10_INPUT_ELEMENT_DESC VertexLayout[] =
 		DXGI_FORMAT_R32G32B32_FLOAT,
 		0,
 		0,
+		D3D10_INPUT_PER_VERTEX_DATA,
+		0 },
+
+	{ "TEXCOORD",
+		0,
+		DXGI_FORMAT_R32G32_FLOAT,
+		0,
+		12,
 		D3D10_INPUT_PER_VERTEX_DATA,
 		0 },
 };
@@ -44,13 +52,15 @@ D3D10Renderer::D3D10Renderer()
 	m_pSwapChain=NULL;
 	m_pDepthStencilView=NULL;
 	m_pDepthStencilTexture=NULL;
+
 	m_pTempEffect=NULL;
-	m_pTempTechnique=NULL;
+	//m_pTempTechnique=NULL;
 	m_pTempBuffer=NULL;
 	m_pTempVertexLayout=NULL;
-	m_View=XMMatrixIdentity();
-	m_Projection=XMMatrixIdentity();
-	m_World=XMMatrixIdentity();
+	m_pBaseTextureMap=NULL;
+	//m_View=XMMatrixIdentity();
+	//m_Projection=XMMatrixIdentity();
+	//m_World=XMMatrixIdentity();
 }
 
 D3D10Renderer::~D3D10Renderer()
@@ -58,6 +68,8 @@ D3D10Renderer::~D3D10Renderer()
 	if (m_pD3D10Device)
 		m_pD3D10Device->ClearState();
 
+	if(m_pBaseTextureMap)
+		m_pBaseTextureMap->Release();
 	if (m_pTempEffect)
 		m_pTempEffect->Release();
 	if (m_pTempVertexLayout)
@@ -91,18 +103,45 @@ bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
 		return false;
 	if (!createInitialRenderTarget(width,height))
 		return false;
-	if (!loadEffectFromFile("Effects/Transform.fx"))
+
+	if (!loadEffectFromFile("Effects/Texture.fx"))
+		return false;
+	if (!createVertexLayout())
 		return false;
 	if (!createBuffer())
 		return false;
-	if (!createVertexLayout())
+	if (!loadBaseTexture("Effects/face.png"))
 		return false;
 	XMFLOAT3 cameraPos=XMFLOAT3(0.0f,0.0f,-10.0f);
 	XMFLOAT3 focusPos=XMFLOAT3(0.0f,0.0f,0.0f);
 	XMFLOAT3 up=XMFLOAT3(0.0f,1.0f,0.0f);
 
 	createCamera(XMLoadFloat3(&cameraPos),XMLoadFloat3(&focusPos),XMLoadFloat3(&up),XM_PI/4,(float)width/(float)height,0.1f,100.0f);
-	positionObject(1.0f,1.0f,1.0f);
+	setSquarePosition(0.0f,0.0f,0.0f);
+	return true;
+}
+
+void D3D10Renderer::createCamera(XMVECTOR &position, XMVECTOR &focus, XMVECTOR &up, float fov, float aspectRatio, float nearClip, float farClip)
+{
+	m_View=XMMatrixIdentity();
+	m_Projection=XMMatrixIdentity();
+
+	m_View=XMMatrixLookAtLH(position,focus,up);
+	m_Projection=XMMatrixPerspectiveFovLH(fov,aspectRatio,nearClip,farClip);
+
+}
+
+void D3D10Renderer::setSquarePosition(float x,float y, float z)
+{
+	m_World=XMMatrixIdentity();
+	
+	m_World=XMMatrixTranslation(x,y,z);
+}
+
+bool D3D10Renderer::loadBaseTexture(char *pFileName)
+{
+	if(FAILED(D3DX10CreateShaderResourceViewFromFileA(m_pD3D10Device, pFileName,NULL,NULL, &m_pBaseTextureMap,NULL)))
+	{return false;}
 	return true;
 }
 
@@ -205,7 +244,7 @@ bool D3D10Renderer::createInitialRenderTarget(int windowWidth, int windowHeight)
 	//it takes in a pointer to the resource that will be used as the depth stencil surface
 	//and a pointer to the depth stencil view description made above
 	//and it gives out an address to the depth stencil view
-	if (FAILED(m_pD3D10Device->CreateDepthStencilView(m_pDepthStencilTexture, &descDSV,&m_pDepthStencilView)))
+	if (FAILED(m_pD3D10Device->CreateDepthStencilView(m_pDepthStencilTexture, &descDSV,& m_pDepthStencilView)))
 		return false;
 
 	if (FAILED(m_pD3D10Device->CreateRenderTargetView( pBackBuffer,
@@ -291,20 +330,23 @@ bool D3D10Renderer::loadEffectFromFile(char* pFileName)
 		OutputDebugStringA((char*)pErrorBuffer->GetBufferPointer());
 		return false;
 	}
-	m_pWorldEffectVariable=m_pTempEffect->GetVariableByName("matWorld")->AsMatrix();
-	m_pViewEffectVariable=m_pTempEffect->GetVariableByName("matView")->AsMatrix();
-	m_pProjectionEffectVariable=m_pTempEffect->GetVariableByName("matProjection")->AsMatrix();
 	m_pTempTechnique=m_pTempEffect->GetTechniqueByName("Render");
+
+	m_pWorldEffectVariable=m_pTempEffect->GetVariableByName("matWorld")->AsMatrix();
+	m_pProjectionEffectVariable=m_pTempEffect->GetVariableByName("matProjection")->AsMatrix();
+	m_pViewEffectVariable=m_pTempEffect->GetVariableByName("matView")->AsMatrix();
+	m_pBaseTextureEffectVariable=m_pTempEffect->GetVariableByName("diffuseMap")->AsShaderResource();
+	//m_pTempTechnique=m_pTempEffect->GetTechniqueByName("Render");
 	return true;
 }
 
 bool D3D10Renderer::createBuffer()
 {
 	Vertex verts[]={
-		{-1.0f,-1.0f,0.0f},
-		{-1.0f,1.0f,0.0f},
-		{1.0f,-1.0f,0.0f},
-		{1.0f,1.0f,1.0f}
+		{-1.0f,-1.0f,0.0f,0.0f,1.0f},
+		{-1.0f,1.0f,0.0f,0.0f,0.0f},
+		{1.0f,-1.0f,0.0f,1.0f,1.0f},
+		{1.0f,1.0f,0.0f,1.0f,0.0f}
 	};
 
 	D3D10_BUFFER_DESC bd;
@@ -356,31 +398,16 @@ void D3D10Renderer::clear(float r,float g,float b,float a)
 	m_pD3D10Device->ClearDepthStencilView( m_pDepthStencilView, D3D10_CLEAR_DEPTH,1.0f,0);
 }
 
-void D3D10Renderer::present()
-{
-	//this presents the next set of buffers in the set of buffers owned by the swap chain
-	m_pSwapChain->Present( 0, 0);
-}
-
-void D3D10Renderer::positionObject(float x,float y, float z)
-{
-	m_World=XMMatrixTranslation(x,y,z);
-}
-
-void D3D10Renderer::createCamera(XMVECTOR &position, XMVECTOR &focus, XMVECTOR &up, float fov, float aspectRatio, float nearClip, float farClip)
-{
-	m_View=XMMatrixLookAtLH(position,focus,up);
-	m_Projection=XMMatrixPerspectiveFovLH(fov,aspectRatio,nearClip,farClip);
-
-}
-
 void D3D10Renderer::render()
 {
-	m_pViewEffectVariable->SetMatrix((float*)&m_View);
-	m_pProjectionEffectVariable->SetMatrix((float*)&m_Projection);
 	m_pWorldEffectVariable->SetMatrix((float*)&m_World);
+	m_pProjectionEffectVariable->SetMatrix((float*)&m_Projection);
+	m_pViewEffectVariable->SetMatrix((float*)&m_View);
+	m_pBaseTextureEffectVariable->SetResource(m_pBaseTextureMap);
+
 	m_pD3D10Device->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 	m_pD3D10Device->IASetInputLayout(m_pTempVertexLayout);
+	
 
 	UINT stride = sizeof( Vertex );
 	UINT offset = 0;
@@ -402,3 +429,10 @@ void D3D10Renderer::render()
 		m_pD3D10Device->Draw(4,0);
 	}
 }
+
+void D3D10Renderer::present()
+{
+	//this presents the next set of buffers in the set of buffers owned by the swap chain
+	m_pSwapChain->Present( 0, 0);
+}
+

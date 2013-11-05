@@ -19,7 +19,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="..\Debug\Effect\Texture.fx">
+    <None Include="..\..\..\face.png">
+      <Filter>Effects</Filter>
+    </None>
+    <None Include="..\Lab1\Effects\Transform.fx">
+      <Filter>Effects</Filter>
+    </None>
+    <None Include="..\Lab1\Effects\Texture.fx">
       <Filter>Effects</Filter>
     </None>
   </ItemGroup>

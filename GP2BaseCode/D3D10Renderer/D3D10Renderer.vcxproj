@@ -76,7 +76,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\Debug\Effect\Texture.fx" />
+    <None Include="..\..\..\face.png" />
+    <None Include="..\Lab1\Effects\Texture.fx" />
+    <None Include="..\Lab1\Effects\Transform.fx" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

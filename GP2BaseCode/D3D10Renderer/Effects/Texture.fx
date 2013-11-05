@@ -39,7 +39,7 @@ SamplerState WrapPointSampler
 float4 PS(PS_INPUT input):SV_TARGET
 {	
 	return diffuseMap.Sample(WrapPointSampler,input.texCoord);
-	//return float4(objectColour);
+	return float4(objectColour);
 }
 
 RasterizerState DisableCulling
