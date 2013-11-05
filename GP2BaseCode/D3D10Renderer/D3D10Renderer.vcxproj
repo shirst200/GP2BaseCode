@@ -79,6 +79,7 @@
     <None Include="..\..\..\face.png" />
     <None Include="..\Lab1\Effects\Texture.fx" />
     <None Include="..\Lab1\Effects\Transform.fx" />
+    <None Include="Effects\Ambient_Effect.fx" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -28,6 +28,9 @@
     <None Include="..\Lab1\Effects\Texture.fx">
       <Filter>Effects</Filter>
     </None>
+    <None Include="Effects\Ambient_Effect.fx">
+      <Filter>Effects</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D10Renderer.h">

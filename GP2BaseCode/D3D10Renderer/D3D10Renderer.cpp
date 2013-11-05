@@ -58,9 +58,7 @@ D3D10Renderer::D3D10Renderer()
 	m_pTempBuffer=NULL;
 	m_pTempVertexLayout=NULL;
 	m_pBaseTextureMap=NULL;
-	//m_View=XMMatrixIdentity();
-	//m_Projection=XMMatrixIdentity();
-	//m_World=XMMatrixIdentity();
+	m_pTempIndexBuffer=NULL;//???
 }
 
 D3D10Renderer::~D3D10Renderer()
@@ -87,7 +85,8 @@ D3D10Renderer::~D3D10Renderer()
 		m_pSwapChain->Release();
 	if (m_pD3D10Device)
 		m_pD3D10Device->Release();
-	
+	if(m_pTempIndexBuffer);
+		m_pTempIndexBuffer->Release();
 }
 
 bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
