@@ -348,6 +348,7 @@ bool D3D10Renderer::createBuffer()
 		{1.0f,1.0f,0.0f,1.0f,0.0f}
 	};
 
+
 	D3D10_BUFFER_DESC bd;
 	bd.Usage = D3D10_USAGE_DEFAULT;
 	bd.ByteWidth = sizeof( Vertex ) * 4;
@@ -365,6 +366,18 @@ bool D3D10Renderer::createBuffer()
 	{
 		OutputDebugStringA("Can't create buffer");
 	}
+	int indicies[]={0,1,2,1,3,2};
+	D3D10_BUFFER_DESC indexBD;
+	indexBD.Usage = D3D10_USAGE_DEFAULT;
+	indexBD.ByteWidth =  sizeof(int)*6;
+	indexBD.BindFlags = D3D10_BIND_INDEX_BUFFER;
+	indexBD.CPUAccessFlags = 0;
+	indexBD.MiscFlags = 0;
+
+	D3D10_SUBRESOURCE_DATA InitlBData;
+	InitlBData.pSysMem=&indicies;
+
+
 	return true;
 }
 
