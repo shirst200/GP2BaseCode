@@ -5,6 +5,7 @@ struct Vertex
 {
 	float x,y,z;
 	float tu,tv;
+	float u,w,v;
 };
 
 const D3D10_INPUT_ELEMENT_DESC VertexLayout[] =
@@ -21,7 +22,7 @@ const D3D10_INPUT_ELEMENT_DESC VertexLayout[] =
 		0,
 		DXGI_FORMAT_R32G32_FLOAT,
 		0,
-		12,
+		20,
 		D3D10_INPUT_PER_VERTEX_DATA,
 		0 },
 };
@@ -103,7 +104,7 @@ bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
 	if (!createInitialRenderTarget(width,height))
 		return false;
 
-	if (!loadEffectFromFile("Effects/Texture.fx"))
+	if (!loadEffectFromFile("Effects/Diffuse.fx"))
 		return false;
 	if (!createVertexLayout())
 		return false;
@@ -111,7 +112,7 @@ bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
 		return false;
 	if (!loadBaseTexture("Effects/face.png"))
 		return false;
-	XMFLOAT3 cameraPos=XMFLOAT3(0.0f,0.0f,-10.0f);
+	XMFLOAT3 cameraPos=XMFLOAT3(-5.0f,-5.0f,-10.0f);
 	XMFLOAT3 focusPos=XMFLOAT3(0.0f,0.0f,0.0f);
 	XMFLOAT3 up=XMFLOAT3(0.0f,1.0f,0.0f);
 
@@ -342,16 +343,20 @@ bool D3D10Renderer::loadEffectFromFile(char* pFileName)
 bool D3D10Renderer::createBuffer()
 {
 	Vertex verts[]={
-		{-1.0f,-1.0f,0.0f,0.0f,1.0f},
-		{-1.0f,1.0f,0.0f,0.0f,0.0f},
-		{1.0f,-1.0f,0.0f,1.0f,1.0f},
-		{1.0f,1.0f,0.0f,1.0f,0.0f}
+		{-1.0f,-1.0f,1.0f,0.0f,1.0f,	0.0f,0.5f,0.5f},
+		{-1.0f,1.0f,1.0f,0.0f,0.0f,		0.0f,0.5f,0.5f},
+		{1.0f,-1.0f,1.0f,1.0f,1.0f,		0.0f,-0.5f,0.5f},
+		{1.0f,1.0f,1.0f,1.0f,0.0f,		0.0f,-0.5f,0.5f},
+		{1.0f,-1.0f,-1.0f,0.0f,1.0f,	0.0f,0.5f,-0.5f},
+		{1.0f,1.0f,-1.0f,0.0f,0.0f,		0.0f,0.5f,-0.5f},
+		{-1.0f,-1.0f,-1.0f,1.0f,1.0f,	0.0f,-0.5f,-0.5f},
+		{-1.0f,1.0f,-1.0f,1.0f,0.0f,	0.0f,-0.5f,-0.5f}
 	};
-
+	
 
 	D3D10_BUFFER_DESC bd;
 	bd.Usage = D3D10_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof( Vertex ) * 4;
+	bd.ByteWidth = sizeof( Vertex ) * 8;
 	bd.BindFlags = D3D10_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
@@ -366,17 +371,29 @@ bool D3D10Renderer::createBuffer()
 	{
 		OutputDebugStringA("Can't create buffer");
 	}
-	int indicies[]={0,1,2,1,3,2};
+	int indicies[]={
+		0,1,2, 1,3,2, //front face
+		4,5,6, 5,7,6, //back face
+		6,7,0, 7,1,0, //Left face
+		2,3,4, 3,5,4, //right face
+		1,7,3, 7,5,3, //top face
+		6,0,4, 0,2,4};//bottom face
 	D3D10_BUFFER_DESC indexBD;
 	indexBD.Usage = D3D10_USAGE_DEFAULT;
-	indexBD.ByteWidth =  sizeof(int)*6;
+	indexBD.ByteWidth =  sizeof(int)*36;
 	indexBD.BindFlags = D3D10_BIND_INDEX_BUFFER;
 	indexBD.CPUAccessFlags = 0;
 	indexBD.MiscFlags = 0;
 
 	D3D10_SUBRESOURCE_DATA InitlBData;
 	InitlBData.pSysMem=&indicies;
-
+	if (FAILED(m_pD3D10Device->CreateBuffer(
+		&indexBD,
+		&InitlBData,
+		&m_pTempIndexBuffer )))
+	{
+		OutputDebugStringA("Can't create buffer");
+	}
 
 	return true;
 }
@@ -430,6 +447,9 @@ void D3D10Renderer::render()
 		&m_pTempBuffer,
 		&stride,
 		&offset );
+	m_pD3D10Device->IASetIndexBuffer(m_pTempIndexBuffer,
+										DXGI_FORMAT_R32_UINT
+										,0);
 
 	D3D10_TECHNIQUE_DESC techniqueDesc;
 	m_pTempTechnique->GetDesc(&techniqueDesc);
@@ -438,7 +458,7 @@ void D3D10Renderer::render()
 	{
 		ID3D10EffectPass *pCurrentPass=m_pTempTechnique->GetPassByIndex(i);
 		pCurrentPass->Apply(0);
-		m_pD3D10Device->Draw(4,0);
+		m_pD3D10Device->DrawIndexed(36,0,0);
 	}
 }
 
