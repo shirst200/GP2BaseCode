@@ -5,7 +5,7 @@ struct Vertex
 {
 	float x,y,z;
 	float tu,tv;
-	float u,w,v;
+	float u,v,w;
 };
 
 const D3D10_INPUT_ELEMENT_DESC VertexLayout[] =
@@ -55,11 +55,9 @@ D3D10Renderer::D3D10Renderer()
 	m_pDepthStencilTexture=NULL;
 
 	m_pTempEffect=NULL;
-	//m_pTempTechnique=NULL;
 	m_pTempBuffer=NULL;
 	m_pTempVertexLayout=NULL;
 	m_pBaseTextureMap=NULL;
-	m_pTempIndexBuffer=NULL;//???
 }
 
 D3D10Renderer::~D3D10Renderer()
@@ -92,6 +90,8 @@ D3D10Renderer::~D3D10Renderer()
 
 bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
 {
+
+
 	HWND window=(HWND)pWindowHandle;
 	RECT windowRect;
 	GetClientRect(window,&windowRect);
@@ -115,6 +115,10 @@ bool D3D10Renderer::init(void *pWindowHandle,bool fullScreen)
 	XMFLOAT3 cameraPos=XMFLOAT3(-5.0f,-5.0f,-10.0f);
 	XMFLOAT3 focusPos=XMFLOAT3(0.0f,0.0f,0.0f);
 	XMFLOAT3 up=XMFLOAT3(0.0f,1.0f,0.0f);
+
+	XMFLOAT4 diffuseMaterial=XMFLOAT4(1.0f,0.0f,1.0f,1.0f);
+	XMFLOAT4 diffuseLightColour=XMFLOAT4(1.0f,1.0f,1.0f,1.0f);
+	XMFLOAT3 lightDirection =XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 	createCamera(XMLoadFloat3(&cameraPos),XMLoadFloat3(&focusPos),XMLoadFloat3(&up),XM_PI/4,(float)width/(float)height,0.1f,100.0f);
 	setSquarePosition(0.0f,0.0f,0.0f);
@@ -336,6 +340,11 @@ bool D3D10Renderer::loadEffectFromFile(char* pFileName)
 	m_pProjectionEffectVariable=m_pTempEffect->GetVariableByName("matProjection")->AsMatrix();
 	m_pViewEffectVariable=m_pTempEffect->GetVariableByName("matView")->AsMatrix();
 	m_pBaseTextureEffectVariable=m_pTempEffect->GetVariableByName("diffuseMap")->AsShaderResource();
+
+	m_pLightDirection=m_pTempEffect->GetVariableByName("lightDirection")->AsVector();
+	m_pDiffuseMaterial=m_pTempEffect->GetVariableByName("diffuseMaterial")->AsVector();
+	m_pDiffuseLightColour=m_pTempEffect->GetVariableByName("diffuseLightColour")->AsVector();
+
 	//m_pTempTechnique=m_pTempEffect->GetTechniqueByName("Render");
 	return true;
 }
@@ -433,6 +442,9 @@ void D3D10Renderer::render()
 	m_pProjectionEffectVariable->SetMatrix((float*)&m_Projection);
 	m_pViewEffectVariable->SetMatrix((float*)&m_View);
 	m_pBaseTextureEffectVariable->SetResource(m_pBaseTextureMap);
+	m_pLightDirection->SetFloatVector((float*)&lightDirection);
+    m_pDiffuseMaterial->SetFloatVector((float*)&diffuseMaterial);
+    m_pDiffuseLightColour->SetFloatVector((float*)&diffuseLightColour);
 
 	m_pD3D10Device->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 	m_pD3D10Device->IASetInputLayout(m_pTempVertexLayout);

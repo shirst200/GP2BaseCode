@@ -35,6 +35,10 @@ private:
 	XMMATRIX m_View;
 	XMMATRIX m_Projection;
 	XMMATRIX m_World;
+	
+	XMFLOAT4 diffuseMaterial;
+	XMFLOAT4 diffuseLightColour;
+	XMFLOAT3 lightDirection;
 private:
 	//D3D10 stuff
 	ID3D10Device * m_pD3D10Device;
@@ -52,4 +56,7 @@ private:
 	ID3D10ShaderResourceView * m_pBaseTextureMap;
 	ID3D10EffectShaderResourceVariable * m_pBaseTextureEffectVariable;
 	ID3D10Buffer * m_pTempIndexBuffer;
+	ID3D10EffectVariable * m_pDiffuseMaterial;
+	ID3D10EffectVariable * m_pDiffuseLightColour;
+	ID3D10EffectVariable * m_pLightDirection;
 };
